@@ -1,38 +1,136 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { MessageCircle, Heart } from "lucide-react";
+"use client"
 
-export default function PostDetailPage() {
+import { useEffect, useState, use } from "react"
+import { useRouter } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
+import { useUser } from "@/contexts/UserContext"
+
+type Post = {
+  id: string
+  urlImg: string | null
+  title: string
+  content: string
+  userId: string
+}
+
+async function getPost(id: string) {
+  const response = await fetch(
+    `https://662dd683a7dda1fa378b6471.mockapi.io/get/AllProducts/Post/${id}`
+  )
+  if (!response.ok) throw new Error("Failed to fetch post")
+  return response.json()
+}
+
+export default function PostDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const router = useRouter()
+  const { user } = useUser()
+  const { id } = use(params)
+  const [post, setPost] = useState<Post | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const data = await getPost(id)
+        setPost(data)
+        setError(null)
+      } catch (error) {
+        console.error("Error fetching post:", error)
+        setError("Failed to load post")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchPost()
+  }, [id])
+
+  if (isLoading) {
+    return (
+      <div className="max-w-md mx-auto min-h-screen bg-background p-4">
+        <div className="text-center py-4">Loading post...</div>
+      </div>
+    )
+  }
+
+  if (error || !post) {
+    return (
+      <div className="max-w-md mx-auto min-h-screen bg-background p-4">
+        <Button
+          variant="ghost"
+          className="mb-4"
+          onClick={() => router.back()}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
+        <div className="text-center py-4 text-destructive">
+          {error || "Post not found"}
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-background pb-20">
-      <Card className="mt-4">
-        <CardContent className="p-4">
-          {/* Post Image */}
-          <div className="w-full h-48 bg-muted rounded-lg mb-4" />
-          {/* Like & Comment */}
-          <div className="flex items-center gap-6 mb-2">
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Heart size={18} /> <span>12</span>
+    <div className="max-w-md mx-auto min-h-screen bg-background p-4">
+      <Button
+        variant="ghost"
+        className="mb-4"
+        onClick={() => router.back()}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back
+      </Button>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3 mb-2">
+            <Avatar>
+              <AvatarFallback>
+                {post.userId.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-semibold">User {post.userId}</div>
+              {post.title && (
+                <CardTitle className="text-lg mt-1">{post.title}</CardTitle>
+              )}
             </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <MessageCircle size={18} /> <span>5</span>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="text-sm text-muted-foreground mb-4">
+            {post.content}
+          </div>
+          {post.urlImg && (
+            <div className="mt-4">
+              <img
+                src={post.urlImg}
+                alt={post.title || "Post image"}
+                className="w-full rounded-lg"
+              />
+            </div>
+          )}
+          <div className="flex gap-4 mt-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <span>❤️</span>
+              <span>0</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span>💬</span>
+              <span>0</span>
             </div>
           </div>
         </CardContent>
       </Card>
-      {/* Comments */}
-      <div className="mt-4 px-2">
-        <div className="font-semibold mb-2">Comment</div>
-        <div className="flex items-center gap-2 mb-4">
-          <Avatar className="w-8 h-8">
-            <AvatarFallback>N</AvatarFallback>
-          </Avatar>
-          <div className="font-medium">Name</div>
-        </div>
-        {/* Add more comments here */}
-        <Input placeholder="Add a comment..." />
-      </div>
     </div>
-  );
+  )
 } 

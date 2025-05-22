@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { generateRandomToken } from "@/common";
+import { useUser } from "@/contexts/UserContext"
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -18,6 +19,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginForm() {
   const router = useRouter();
+  const { setUser } = useUser()
   const {
     register,
     handleSubmit,
@@ -40,7 +42,7 @@ export default function LoginForm() {
       if (found) {
         const token = generateRandomToken();
         window.localStorage.setItem("loginToken", JSON.stringify(token));
-
+        setUser(found);
         router.push("/community");
       } else {
         alert("Email or password is incorrect!");

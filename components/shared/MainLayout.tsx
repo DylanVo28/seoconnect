@@ -1,3 +1,5 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -10,14 +12,9 @@ export default function MainLayout() {
         </Avatar>
         <h1 className="text-xl font-bold m-0">SEO.Connect</h1>
       </header>
-      <main className="flex-1 min-h-[60vh]"></main>
-      <nav className="bottom-nav flex justify-around border-t py-3 bg-white">
-        <a href="#" className="text-muted-foreground text-base font-medium">Home</a>
-        <a href="#" className="text-muted-foreground text-base font-medium">Community</a>
-        <a href="#" className="text-muted-foreground text-base font-medium">Suppliers</a>
-        <a href="#" className="text-muted-foreground text-base font-medium">Events</a>
-        <a href="#" className="text-muted-foreground text-base font-medium">Notifications</a>
-      </nav>
+      <main className="flex-1 min-h-[60vh] pb-20">
+        {/* Main content will be rendered here */}
+      </main>
     </Card>
   );
 } 
