@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { generateRandomToken } from "@/common";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -27,17 +28,25 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const res = await fetch("https://662dd683a7dda1fa378b6471.mockapi.io/get/AllProducts/accounts");
+      const res = await fetch(
+        "https://662dd683a7dda1fa378b6471.mockapi.io/get/AllProducts/accounts",
+      );
       if (!res.ok) throw new Error("Failed to fetch accounts");
       const accounts = await res.json();
-      const found = accounts.find((acc: any) => acc.email === data.email && acc.password === data.password);
+      const found = accounts.find(
+        (acc: any) =>
+          acc.email === data.email && acc.password === data.password,
+      );
       if (found) {
+        const token = generateRandomToken();
+        window.localStorage.setItem("loginToken", JSON.stringify(token));
+
         router.push("/community");
       } else {
-        alert("Email hoặc mật khẩu không đúng!");
+        alert("Email or password is incorrect!");
       }
     } catch (err: any) {
-      alert("Đăng nhập thất bại: " + err.message);
+      alert("Sign in failure: " + err.message);
     }
   };
 
@@ -48,23 +57,48 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Email" {...register("email")} />
-            {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email"
+              {...register("email")}
+            />
+            {errors.email && (
+              <span className="text-xs text-red-500">
+                {errors.email.message}
+              </span>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Password" {...register("password")} />
-            {errors.password && <span className="text-xs text-red-500">{errors.password.message}</span>}
+            <Input
+              id="password"
+              type="password"
+              placeholder="Password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <span className="text-xs text-red-500">
+                {errors.password.message}
+              </span>
+            )}
           </div>
           <div className="text-right mb-1">
-            <a href="#" className="text-sm underline text-muted-foreground">Forgot password?</a>
+            <a href="#" className="text-sm underline text-muted-foreground">
+              Forgot password?
+            </a>
           </div>
-          <Button type="submit" className="mt-2 w-full" disabled={isSubmitting}>Log in</Button>
+          <Button type="submit" className="mt-2 w-full" disabled={isSubmitting}>
+            Log in
+          </Button>
         </form>
         <p className="text-center text-sm mt-2">
-          Don't have an account? <a href="/register" className="underline text-muted-foreground">Sign up</a>
+          Don't have an account?{" "}
+          <a href="/register" className="underline text-muted-foreground">
+            Sign up
+          </a>
         </p>
       </CardContent>
     </Card>
   );
-} 
+}
