@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SEO.Connect - Community Platform
+
+A Next.js-based community platform for SEO professionals to connect, share knowledge, and collaborate.
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **UI Components**: shadcn/ui (built on Radix UI)
+- **Styling**: Tailwind CSS
+- **Form Handling**: React Hook Form + Zod
+- **State Management**: React Context (for user authentication)
+- **API**: MockAPI.io (for development)
 
 ## Getting Started
 
-First, run the development server:
-
+1. Clone the repository
+2. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+app/
+├── community/           # Community features
+│   ├── [id]/           # Individual post pages
+│   ├── create-post/    # Post creation
+│   └── page.tsx        # Community feed
+├── login/              # Authentication
+└── page.tsx           # Landing page
+components/
+├── shared/            # Reusable components
+└── ui/               # UI components (shadcn)
+contexts/
+└── UserContext.tsx   # User authentication context
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Technical Decisions & Patterns
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 1. Client-Side Components
+- Used "use client" directive for interactive components
+- Implemented client-side routing for better UX
+- Chose client-side data fetching for real-time updates
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Authentication
+- Implemented simple token-based auth using localStorage
+- Used React Context for global user state
+- Assumed single-device usage (no token refresh mechanism)
 
-## Deploy on Vercel
+### 3. Form Handling
+- Chose React Hook Form for efficient form management
+- Used Zod for runtime type validation
+- Implemented form validation before API calls
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. UI/UX Decisions
+- Mobile-first design with max-width containers
+- Used shadcn/ui for consistent, accessible components
+- Implemented loading states and error handling
+- Added hover effects for interactive elements
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. Data Management
+- Used MockAPI.io for development
+- Implemented optimistic updates for better UX
+- Assumed simple data structure (no complex relationships)
+
+## Assumptions & Shortcuts
+
+1. **Authentication**:
+   - No refresh token mechanism
+   - Simple localStorage-based token storage
+   - No password hashing (using MockAPI)
+
+2. **Data Management**:
+   - No real-time updates
+   - No pagination implemented
+   - No image upload (URL only)
+   - No complex data relationships
+
+3. **Features**:
+   - No comment system
+   - No like/unlike functionality
+   - No user profiles
+   - No search functionality
+
+4. **Security**:
+   - No CSRF protection
+   - No rate limiting
+   - Basic error handling
+
+## Future Improvements
+
+1. **Authentication**:
+   - Implement proper JWT with refresh tokens
+   - Add password hashing
+   - Add social login
+
+2. **Features**:
+   - Add comment system
+   - Implement like/unlike
+   - Add user profiles
+   - Add search and filtering
+   - Add image upload
+
+3. **Performance**:
+   - Implement pagination
+   - Add caching
+   - Optimize images
+   - Add real-time updates
+
+4. **Security**:
+   - Add CSRF protection
+   - Implement rate limiting
+   - Add input sanitization
+   - Add proper error boundaries
+
+## API Endpoints
+
+Currently using MockAPI.io endpoints:
+- Posts: `https://662dd683a7dda1fa378b6471.mockapi.io/get/AllProducts/Post`
+- Accounts: `https://662dd683a7dda1fa378b6471.mockapi.io/get/AllProducts/accounts`
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
